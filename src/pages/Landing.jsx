@@ -1,10 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { 
-  Heart, FileText, Activity, Shield, Menu, X, 
-  ChevronDown, CheckCircle, Star, Mail, Phone, 
-  MapPin, Send, MessageSquare, Clock, Users
+import {
+  Heart,
+  FileText,
+  Activity,
+  Shield,
+  Menu,
+  X,
+  ChevronDown,
+  CheckCircle,
+  Star,
+  Mail,
+  Phone,
+  MapPin,
+  Send,
+  MessageSquare,
+  Clock,
+  Users,
 } from "lucide-react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -60,10 +73,15 @@ const Landing = () => {
       setContactLoading(true);
       try {
         const response = await axios.post(`${API_URL}/contact`, values);
-        toast.success("✅ Message sent successfully! We'll get back to you soon.");
+        toast.success(
+          "✅ Message sent successfully! We'll get back to you soon."
+        );
         resetForm();
       } catch (error) {
-        toast.error(error.response?.data?.message || "❌ Failed to send message. Please try again.");
+        toast.error(
+          error.response?.data?.message ||
+            "❌ Failed to send message. Please try again."
+        );
       } finally {
         setContactLoading(false);
       }
@@ -74,35 +92,43 @@ const Landing = () => {
   const faqs = [
     {
       question: "What is HealthMate?",
-      answer: "HealthMate is an AI-powered personal health companion that helps you manage your medical reports, track vitals, and get easy-to-understand health insights in both English and Roman Urdu.",
+      answer:
+        "HealthMate is an AI-powered personal health companion that helps you manage your medical reports, track vitals, and get easy-to-understand health insights in both English and Roman Urdu.",
     },
     {
       question: "Is my health data secure?",
-      answer: "Yes! Your health data is encrypted and stored securely. We use industry-standard security practices and only you have access to your medical records.",
+      answer:
+        "Yes! Your health data is encrypted and stored securely. We use industry-standard security practices and only you have access to your medical records.",
     },
     {
       question: "How does the AI report analysis work?",
-      answer: "Our AI (powered by Google Gemini) reads your uploaded medical reports (PDFs or images) and provides simple explanations, highlights abnormal values, and suggests questions to ask your doctor.",
+      answer:
+        "Our AI (powered by Google Gemini) reads your uploaded medical reports (PDFs or images) and provides simple explanations, highlights abnormal values, and suggests questions to ask your doctor.",
     },
     {
       question: "Can I use HealthMate without uploading reports?",
-      answer: "Absolutely! You can manually track your vitals like blood pressure, sugar levels, weight, and more even without uploading any lab reports.",
+      answer:
+        "Absolutely! You can manually track your vitals like blood pressure, sugar levels, weight, and more even without uploading any lab reports.",
     },
     {
       question: "Is HealthMate free to use?",
-      answer: "Yes, HealthMate is completely free to use. Just create an account and start managing your health records.",
+      answer:
+        "Yes, HealthMate is completely free to use. Just create an account and start managing your health records.",
     },
     {
       question: "Can HealthMate replace my doctor?",
-      answer: "No. HealthMate is for understanding and tracking your health data only. Always consult your doctor for medical advice and treatment decisions.",
+      answer:
+        "No. HealthMate is for understanding and tracking your health data only. Always consult your doctor for medical advice and treatment decisions.",
     },
     {
       question: "What languages does HealthMate support?",
-      answer: "HealthMate provides bilingual support in English and Roman Urdu, making it accessible for everyone.",
+      answer:
+        "HealthMate provides bilingual support in English and Roman Urdu, making it accessible for everyone.",
     },
     {
       question: "What file formats can I upload?",
-      answer: "You can upload medical reports in PDF format or as images (JPG, PNG). Our AI can read both types of files.",
+      answer:
+        "You can upload medical reports in PDF format or as images (JPG, PNG). Our AI can read both types of files.",
     },
   ];
 
@@ -143,26 +169,41 @@ const Landing = () => {
                 <Heart className="w-8 h-8 text-sky-500" />
               </div>
               <span className="text-2xl font-bold">
-                <span className="text-sky-500">Health</span>
+                <span className="text-sky-500">Health </span>
                 <span className="text-gray-900">Mate</span>
               </span>
             </Link>
 
             {/* Desktop Menu */}
             <div className="hidden md:flex items-center gap-8">
-              <a href="#features" className="text-gray-700 hover:text-sky-500 font-medium transition">
+              <a
+                href="#features"
+                className="text-gray-700 hover:text-sky-500 font-medium transition"
+              >
                 Features
               </a>
-              <a href="#how-it-works" className="text-gray-700 hover:text-sky-500 font-medium transition">
+              <a
+                href="#how-it-works"
+                className="text-gray-700 hover:text-sky-500 font-medium transition"
+              >
                 How It Works
               </a>
-              <a href="#testimonials" className="text-gray-700 hover:text-sky-500 font-medium transition">
+              <a
+                href="#testimonials"
+                className="text-gray-700 hover:text-sky-500 font-medium transition"
+              >
                 Testimonials
               </a>
-              <a href="#faq" className="text-gray-700 hover:text-sky-500 font-medium transition">
+              <a
+                href="#faq"
+                className="text-gray-700 hover:text-sky-500 font-medium transition"
+              >
                 FAQ
               </a>
-              <a href="#contact" className="text-gray-700 hover:text-sky-500 font-medium transition">
+              <a
+                href="#contact"
+                className="text-gray-700 hover:text-sky-500 font-medium transition"
+              >
                 Contact
               </a>
             </div>
@@ -190,26 +231,50 @@ const Landing = () => {
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="md:hidden p-2 hover:bg-gray-100 rounded-lg"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
             </button>
           </div>
 
           {/* Mobile Menu */}
           {mobileMenuOpen && (
             <div className="md:hidden mt-4 pb-4 space-y-3">
-              <a href="#features" className="block py-2 text-gray-700 hover:text-sky-500 font-medium" onClick={() => setMobileMenuOpen(false)}>
+              <a
+                href="#features"
+                className="block py-2 text-gray-700 hover:text-sky-500 font-medium"
+                onClick={() => setMobileMenuOpen(false)}
+              >
                 Features
               </a>
-              <a href="#how-it-works" className="block py-2 text-gray-700 hover:text-sky-500 font-medium" onClick={() => setMobileMenuOpen(false)}>
+              <a
+                href="#how-it-works"
+                className="block py-2 text-gray-700 hover:text-sky-500 font-medium"
+                onClick={() => setMobileMenuOpen(false)}
+              >
                 How It Works
               </a>
-              <a href="#testimonials" className="block py-2 text-gray-700 hover:text-sky-500 font-medium" onClick={() => setMobileMenuOpen(false)}>
+              <a
+                href="#testimonials"
+                className="block py-2 text-gray-700 hover:text-sky-500 font-medium"
+                onClick={() => setMobileMenuOpen(false)}
+              >
                 Testimonials
               </a>
-              <a href="#faq" className="block py-2 text-gray-700 hover:text-sky-500 font-medium" onClick={() => setMobileMenuOpen(false)}>
+              <a
+                href="#faq"
+                className="block py-2 text-gray-700 hover:text-sky-500 font-medium"
+                onClick={() => setMobileMenuOpen(false)}
+              >
                 FAQ
               </a>
-              <a href="#contact" className="block py-2 text-gray-700 hover:text-sky-500 font-medium" onClick={() => setMobileMenuOpen(false)}>
+              <a
+                href="#contact"
+                className="block py-2 text-gray-700 hover:text-sky-500 font-medium"
+                onClick={() => setMobileMenuOpen(false)}
+              >
                 Contact
               </a>
               {!isAuthenticated && (
@@ -245,15 +310,17 @@ const Landing = () => {
               </div>
             </div>
             <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-6">
-              💚 <span className="text-sky-500">Health</span>Mate
+              <span className="text-sky-500">Health </span>Mate
             </h1>
             <p className="text-3xl text-emerald-600 font-semibold mb-4">
               Sehat ka Smart Dost
             </p>
             <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
-              Your personal AI-powered health companion. Upload medical reports, track vitals, and get instant explanations in English and Roman Urdu.
+              Your personal AI-powered health companion. Upload medical reports,
+              track vitals, and get instant explanations in English and Roman
+              Urdu.
             </p>
-            
+
             {!isAuthenticated && (
               <div className="flex gap-4 justify-center flex-wrap">
                 <Link
@@ -311,7 +378,8 @@ const Landing = () => {
                 Upload Medical Reports
               </h3>
               <p className="text-gray-600 leading-relaxed">
-                Upload PDFs or images of lab reports. AI automatically reads and explains results in simple language.
+                Upload PDFs or images of lab reports. AI automatically reads and
+                explains results in simple language.
               </p>
             </div>
 
@@ -323,7 +391,8 @@ const Landing = () => {
                 Track Vital Signs
               </h3>
               <p className="text-gray-600 leading-relaxed">
-                Manually log BP, blood sugar, weight, heart rate, and more. View trends over time.
+                Manually log BP, blood sugar, weight, heart rate, and more. View
+                trends over time.
               </p>
             </div>
 
@@ -335,7 +404,8 @@ const Landing = () => {
                 Secure & Private
               </h3>
               <p className="text-gray-600 leading-relaxed">
-                Your health data is encrypted and stored securely. Only you have access to your records.
+                Your health data is encrypted and stored securely. Only you have
+                access to your records.
               </p>
             </div>
 
@@ -347,7 +417,8 @@ const Landing = () => {
                 Bilingual Support
               </h3>
               <p className="text-gray-600 leading-relaxed">
-                Get explanations in both English and Roman Urdu. AI speaks your language!
+                Get explanations in both English and Roman Urdu. AI speaks your
+                language!
               </p>
             </div>
 
@@ -359,7 +430,8 @@ const Landing = () => {
                 Health Timeline
               </h3>
               <p className="text-gray-600 leading-relaxed">
-                View all your reports and vitals in chronological order. Track your health journey.
+                View all your reports and vitals in chronological order. Track
+                your health journey.
               </p>
             </div>
 
@@ -371,7 +443,8 @@ const Landing = () => {
                 Family Friendly
               </h3>
               <p className="text-gray-600 leading-relaxed">
-                Manage health records for yourself and your family members in one account.
+                Manage health records for yourself and your family members in
+                one account.
               </p>
             </div>
           </div>
@@ -379,7 +452,10 @@ const Landing = () => {
       </section>
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="py-20 bg-gradient-to-br from-gray-50 to-white">
+      <section
+        id="how-it-works"
+        className="py-20 bg-gradient-to-br from-gray-50 to-white"
+      >
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
@@ -400,7 +476,8 @@ const Landing = () => {
                   Create Your Free Account
                 </h3>
                 <p className="text-gray-600 text-lg leading-relaxed">
-                  Sign up in seconds with just your name and email. No credit card required. / Apna naam aur email se account banayein.
+                  Sign up in seconds with just your name and email. No credit
+                  card required. / Apna naam aur email se account banayein.
                 </p>
               </div>
             </div>
@@ -414,7 +491,9 @@ const Landing = () => {
                   Upload Reports or Add Vitals
                 </h3>
                 <p className="text-gray-600 text-lg leading-relaxed">
-                  Upload PDF/image medical reports OR manually enter your BP, sugar, weight, etc. / Reports upload karein ya vitals manually add karein.
+                  Upload PDF/image medical reports OR manually enter your BP,
+                  sugar, weight, etc. / Reports upload karein ya vitals manually
+                  add karein.
                 </p>
               </div>
             </div>
@@ -428,7 +507,9 @@ const Landing = () => {
                   Get AI-Powered Insights
                 </h3>
                 <p className="text-gray-600 text-lg leading-relaxed">
-                  Receive easy-to-understand explanations in English and Roman Urdu. Track your health timeline. / AI se samajh ke results hasil karein.
+                  Receive easy-to-understand explanations in English and Roman
+                  Urdu. Track your health timeline. / AI se samajh ke results
+                  hasil karein.
                 </p>
               </div>
             </div>
@@ -457,16 +538,23 @@ const Landing = () => {
                 <div className="flex items-center gap-4 mb-4">
                   <div className="text-5xl">{testimonial.image}</div>
                   <div>
-                    <h4 className="font-bold text-gray-900 text-lg">{testimonial.name}</h4>
+                    <h4 className="font-bold text-gray-900 text-lg">
+                      {testimonial.name}
+                    </h4>
                     <p className="text-gray-600 text-sm">{testimonial.role}</p>
                   </div>
                 </div>
                 <div className="flex gap-1 mb-4">
                   {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 fill-amber-400 text-amber-400" />
+                    <Star
+                      key={i}
+                      className="w-5 h-5 fill-amber-400 text-amber-400"
+                    />
                   ))}
                 </div>
-                <p className="text-gray-700 leading-relaxed italic">"{testimonial.text}"</p>
+                <p className="text-gray-700 leading-relaxed italic">
+                  "{testimonial.text}"
+                </p>
               </div>
             ))}
           </div>
@@ -474,15 +562,16 @@ const Landing = () => {
       </section>
 
       {/* FAQ Section */}
-      <section id="faq" className="py-20 bg-gradient-to-br from-gray-50 to-white">
+      <section
+        id="faq"
+        className="py-20 bg-gradient-to-br from-gray-50 to-white"
+      >
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
               Frequently Asked Questions
             </h2>
-            <p className="text-xl text-gray-600">
-              Aapke sawalat ke jawabat
-            </p>
+            <p className="text-xl text-gray-600">Aapke sawalat ke jawabat</p>
           </div>
 
           <div className="max-w-3xl mx-auto space-y-4">
@@ -492,10 +581,14 @@ const Landing = () => {
                 className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all"
               >
                 <button
-                  onClick={() => setActiveAccordion(activeAccordion === index ? null : index)}
+                  onClick={() =>
+                    setActiveAccordion(activeAccordion === index ? null : index)
+                  }
                   className="w-full px-6 py-5 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
                 >
-                  <span className="font-semibold text-gray-900 text-lg pr-4">{faq.question}</span>
+                  <span className="font-semibold text-gray-900 text-lg pr-4">
+                    {faq.question}
+                  </span>
                   <ChevronDown
                     className={`w-6 h-6 text-sky-500 flex-shrink-0 transition-transform ${
                       activeAccordion === index ? "transform rotate-180" : ""
@@ -504,7 +597,9 @@ const Landing = () => {
                 </button>
                 {activeAccordion === index && (
                   <div className="px-6 py-4 bg-sky-50 border-t border-sky-100">
-                    <p className="text-gray-700 leading-relaxed">{faq.answer}</p>
+                    <p className="text-gray-700 leading-relaxed">
+                      {faq.answer}
+                    </p>
                   </div>
                 )}
               </div>
@@ -521,7 +616,8 @@ const Landing = () => {
               Get In Touch
             </h2>
             <p className="text-xl text-gray-600">
-              Have questions? We'd love to hear from you / Koi sawal? Hum se rabta karein
+              Have questions? We'd love to hear from you / Koi sawal? Hum se
+              rabta karein
             </p>
           </div>
 
@@ -529,7 +625,9 @@ const Landing = () => {
             {/* Contact Info */}
             <div className="space-y-8">
               <div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-6">Contact Information</h3>
+                <h3 className="text-2xl font-bold text-gray-900 mb-6">
+                  Contact Information
+                </h3>
                 <div className="space-y-4">
                   <div className="flex items-start gap-4">
                     <div className="bg-sky-100 p-3 rounded-lg">
@@ -566,7 +664,8 @@ const Landing = () => {
               <div className="bg-gradient-to-br from-sky-50 to-emerald-50 p-6 rounded-2xl">
                 <h4 className="font-bold text-gray-900 mb-2">💡 Quick Tip</h4>
                 <p className="text-gray-700">
-                  We typically respond within 24-48 hours. For urgent matters, please call us directly.
+                  We typically respond within 24-48 hours. For urgent matters,
+                  please call us directly.
                 </p>
               </div>
             </div>
@@ -592,7 +691,9 @@ const Landing = () => {
                     placeholder="Your name"
                   />
                   {contactForm.touched.name && contactForm.errors.name && (
-                    <p className="mt-1 text-sm text-red-600">{contactForm.errors.name}</p>
+                    <p className="mt-1 text-sm text-red-600">
+                      {contactForm.errors.name}
+                    </p>
                   )}
                 </div>
 
@@ -614,7 +715,9 @@ const Landing = () => {
                     placeholder="your@email.com"
                   />
                   {contactForm.touched.email && contactForm.errors.email && (
-                    <p className="mt-1 text-sm text-red-600">{contactForm.errors.email}</p>
+                    <p className="mt-1 text-sm text-red-600">
+                      {contactForm.errors.email}
+                    </p>
                   )}
                 </div>
 
@@ -636,7 +739,9 @@ const Landing = () => {
                     placeholder="03001234567"
                   />
                   {contactForm.touched.phone && contactForm.errors.phone && (
-                    <p className="mt-1 text-sm text-red-600">{contactForm.errors.phone}</p>
+                    <p className="mt-1 text-sm text-red-600">
+                      {contactForm.errors.phone}
+                    </p>
                   )}
                 </div>
 
@@ -657,9 +762,12 @@ const Landing = () => {
                     }`}
                     placeholder="What's this about?"
                   />
-                  {contactForm.touched.subject && contactForm.errors.subject && (
-                    <p className="mt-1 text-sm text-red-600">{contactForm.errors.subject}</p>
-                  )}
+                  {contactForm.touched.subject &&
+                    contactForm.errors.subject && (
+                      <p className="mt-1 text-sm text-red-600">
+                        {contactForm.errors.subject}
+                      </p>
+                    )}
                 </div>
 
                 <div>
@@ -679,9 +787,12 @@ const Landing = () => {
                     }`}
                     placeholder="Your message "
                   />
-                  {contactForm.touched.message && contactForm.errors.message && (
-                    <p className="mt-1 text-sm text-red-600">{contactForm.errors.message}</p>
-                  )}
+                  {contactForm.touched.message &&
+                    contactForm.errors.message && (
+                      <p className="mt-1 text-sm text-red-600">
+                        {contactForm.errors.message}
+                      </p>
+                    )}
                 </div>
 
                 <button
@@ -719,9 +830,7 @@ const Landing = () => {
                   <span className="text-sky-400">Health</span>Mate
                 </span>
               </div>
-              <p className="text-gray-400">
-                Sehat ka Smart Dost 💚
-              </p>
+              <p className="text-gray-400">Sehat ka Smart Dost 💚</p>
               <p className="text-gray-400 mt-2">
                 Your AI-powered personal health companion.
               </p>
@@ -731,10 +840,38 @@ const Landing = () => {
             <div>
               <h4 className="font-bold text-lg mb-4">Quick Links</h4>
               <ul className="space-y-2">
-                <li><a href="#features" className="text-gray-400 hover:text-sky-400 transition">Features</a></li>
-                <li><a href="#how-it-works" className="text-gray-400 hover:text-sky-400 transition">How It Works</a></li>
-                <li><a href="#testimonials" className="text-gray-400 hover:text-sky-400 transition">Testimonials</a></li>
-                <li><a href="#faq" className="text-gray-400 hover:text-sky-400 transition">FAQ</a></li>
+                <li>
+                  <a
+                    href="#features"
+                    className="text-gray-400 hover:text-sky-400 transition"
+                  >
+                    Features
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#how-it-works"
+                    className="text-gray-400 hover:text-sky-400 transition"
+                  >
+                    How It Works
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#testimonials"
+                    className="text-gray-400 hover:text-sky-400 transition"
+                  >
+                    Testimonials
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#faq"
+                    className="text-gray-400 hover:text-sky-400 transition"
+                  >
+                    FAQ
+                  </a>
+                </li>
               </ul>
             </div>
 
@@ -742,10 +879,38 @@ const Landing = () => {
             <div>
               <h4 className="font-bold text-lg mb-4">Resources</h4>
               <ul className="space-y-2">
-                <li><Link to="/register" className="text-gray-400 hover:text-sky-400 transition">Create Account</Link></li>
-                <li><Link to="/login" className="text-gray-400 hover:text-sky-400 transition">Sign In</Link></li>
-                <li><a href="#contact" className="text-gray-400 hover:text-sky-400 transition">Contact Us</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-sky-400 transition">Privacy Policy</a></li>
+                <li>
+                  <Link
+                    to="/register"
+                    className="text-gray-400 hover:text-sky-400 transition"
+                  >
+                    Create Account
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/login"
+                    className="text-gray-400 hover:text-sky-400 transition"
+                  >
+                    Sign In
+                  </Link>
+                </li>
+                <li>
+                  <a
+                    href="#contact"
+                    className="text-gray-400 hover:text-sky-400 transition"
+                  >
+                    Contact Us
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="text-gray-400 hover:text-sky-400 transition"
+                  >
+                    Privacy Policy
+                  </a>
+                </li>
               </ul>
             </div>
 
@@ -767,7 +932,8 @@ const Landing = () => {
               </p>
               <div className="bg-amber-50 px-4 py-2 rounded-lg">
                 <p className="text-amber-800 text-sm font-medium">
-                  ⚕️ For understanding only, not medical advice / Sirf samajhne ke liye, ilaaj ke liye nahi
+                  ⚕️ For understanding only, not medical advice / Sirf samajhne
+                  ke liye, ilaaj ke liye nahi
                 </p>
               </div>
             </div>
@@ -779,4 +945,3 @@ const Landing = () => {
 };
 
 export default Landing;
-

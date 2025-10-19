@@ -198,7 +198,10 @@ const Timeline = () => {
                         </div>
                       </Link>
                     ) : (
-                      <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-emerald-500">
+                      <Link
+                        to={`/vital/${entry._id}`}
+                        className="block bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-6 border-l-4 border-emerald-500"
+                      >
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex items-start gap-4 flex-1">
                             <div className="bg-emerald-100 p-3 rounded-lg">
@@ -265,7 +268,7 @@ const Timeline = () => {
                             </div>
                           </div>
                         </div>
-                      </div>
+                      </Link>
                     )}
                   </div>
                 </div>

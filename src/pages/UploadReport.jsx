@@ -40,7 +40,7 @@ const UploadReport = () => {
         return;
       }
       setFormData({ ...formData, file });
-      
+
       // Preview
       if (file.type.startsWith("image/")) {
         const reader = new FileReader();
@@ -238,7 +238,8 @@ const UploadReport = () => {
 
           <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
             <p className="text-amber-800 text-sm">
-              <strong>Note:</strong> AI will analyze your report and provide a summary in English and Roman Urdu. This may take a few moments.
+              <strong>Note:</strong> AI will analyze your report and provide a
+              summary in English and Roman Urdu. This may take a few moments.
             </p>
           </div>
         </div>

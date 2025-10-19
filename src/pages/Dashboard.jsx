@@ -19,8 +19,12 @@ const Dashboard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
-  const { reports, loading: reportsLoading } = useSelector((state) => state.reports);
-  const { vitals, loading: vitalsLoading } = useSelector((state) => state.vitals);
+  const { reports, loading: reportsLoading } = useSelector(
+    (state) => state.reports
+  );
+  const { vitals, loading: vitalsLoading } = useSelector(
+    (state) => state.vitals
+  );
 
   useEffect(() => {
     dispatch(getReports({ limit: 5 }));
@@ -51,7 +55,7 @@ const Dashboard = () => {
               <FileText className="w-6 h-6 text-sky-500" />
             </div>
             <span className="text-2xl font-bold">
-              <span className="text-sky-500">Health</span>Mate
+              <span className="text-sky-500">Health </span>Mate
             </span>
           </Link>
           <div className="flex items-center gap-4">
@@ -71,7 +75,6 @@ const Dashboard = () => {
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
-        {/* Welcome Section */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Welcome back, {user?.name}! 👋
@@ -81,7 +84,6 @@ const Dashboard = () => {
           </p>
         </div>
 
-        {/* Quick Actions */}
         <div className="grid md:grid-cols-3 gap-6 mb-8">
           <Link
             to="/upload"
@@ -105,10 +107,10 @@ const Dashboard = () => {
             <div className="bg-emerald-100 p-3 rounded-lg w-fit mb-4 group-hover:bg-emerald-500 transition-colors">
               <Activity className="w-8 h-8 text-emerald-500 group-hover:text-white" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">
-              Add Vitals
-            </h3>
-            <p className="text-gray-600">BP, sugar, weight manually add karein</p>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Add Vitals</h3>
+            <p className="text-gray-600">
+              BP, sugar, weight manually add karein
+            </p>
           </Link>
 
           <Link
@@ -139,7 +141,9 @@ const Dashboard = () => {
           </div>
           <div className="bg-gradient-to-br from-amber-500 to-amber-600 p-6 rounded-xl text-white">
             <TrendingUp className="w-8 h-8 mb-2 opacity-80" />
-            <div className="text-3xl font-bold">{reports.length + vitals.length}</div>
+            <div className="text-3xl font-bold">
+              {reports.length + vitals.length}
+            </div>
             <div className="text-amber-100">Total Entries</div>
           </div>
         </div>
@@ -211,9 +215,10 @@ const Dashboard = () => {
           ) : (
             <div className="space-y-3">
               {vitals.slice(0, 5).map((vital) => (
-                <div
+                <Link
                   key={vital._id}
-                  className="flex items-center justify-between p-4 border border-gray-200 rounded-lg"
+                  to={`/vital/${vital._id}`}
+                  className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-green-500 hover:bg-sky-50 transition-all"
                 >
                   <div className="flex items-center gap-4">
                     <div className="bg-emerald-100 p-2 rounded">
@@ -221,8 +226,10 @@ const Dashboard = () => {
                     </div>
                     <div>
                       <div className="font-medium text-gray-900">
-                        {vital.bloodPressure && `BP: ${vital.bloodPressure.systolic}/${vital.bloodPressure.diastolic}`}
-                        {vital.bloodSugar && ` | Sugar: ${vital.bloodSugar.value}`}
+                        {vital.bloodPressure &&
+                          `BP: ${vital.bloodPressure.systolic}/${vital.bloodPressure.diastolic}`}
+                        {vital.bloodSugar &&
+                          ` | Sugar: ${vital.bloodSugar.value}`}
                         {vital.weight && ` | Weight: ${vital.weight.value}kg`}
                       </div>
                       <div className="text-sm text-gray-500">
@@ -233,7 +240,7 @@ const Dashboard = () => {
                   <div className="text-sm text-gray-500">
                     {formatDate(vital.recordDate)}
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           )}

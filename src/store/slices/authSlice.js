@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../api/axios";
 
-// Register user
 export const register = createAsyncThunk(
   "auth/register",
   async (userData, { rejectWithValue }) => {
@@ -18,7 +17,6 @@ export const register = createAsyncThunk(
   }
 );
 
-// Login user
 export const login = createAsyncThunk(
   "auth/login",
   async (credentials, { rejectWithValue }) => {
@@ -33,14 +31,12 @@ export const login = createAsyncThunk(
   }
 );
 
-// Logout user
 export const logout = createAsyncThunk("auth/logout", async () => {
   await api.post("/auth/logout");
   localStorage.removeItem("token");
   localStorage.removeItem("user");
 });
 
-// Get current user
 export const getMe = createAsyncThunk(
   "auth/getMe",
   async (_, { rejectWithValue }) => {
@@ -88,7 +84,7 @@ const authSlice = createSlice({
       })
       // Login
       .addCase(login.pending, (state) => {
-        state.loading = false;
+        state.loading = true;
         state.error = null;
       })
       .addCase(login.fulfilled, (state, action) => {

@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../api/axios";
 
-// Upload report
 export const uploadReport = createAsyncThunk(
   "reports/upload",
   async (formData, { rejectWithValue }) => {
@@ -18,7 +17,6 @@ export const uploadReport = createAsyncThunk(
   }
 );
 
-// Get all reports
 export const getReports = createAsyncThunk(
   "reports/getAll",
   async (params = {}, { rejectWithValue }) => {
@@ -33,7 +31,6 @@ export const getReports = createAsyncThunk(
   }
 );
 
-// Get single report
 export const getReportById = createAsyncThunk(
   "reports/getById",
   async (id, { rejectWithValue }) => {
@@ -48,7 +45,6 @@ export const getReportById = createAsyncThunk(
   }
 );
 
-// Delete report
 export const deleteReport = createAsyncThunk(
   "reports/delete",
   async (id, { rejectWithValue }) => {

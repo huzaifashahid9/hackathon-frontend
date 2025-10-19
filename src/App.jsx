@@ -1,19 +1,18 @@
 import React, { useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import {useDispatch , useSelector} from  "react-redux"
+import { useDispatch, useSelector } from "react-redux";
 import { getMe } from "./store/slices/authSlice";
 
-// Pages
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import UploadReport from "./pages/UploadReport";
 import ReportView from "./pages/ReportView";
 import AddVitals from "./pages/AddVitals";
+import VitalView from "./pages/VitalView";
 import Timeline from "./pages/Timeline";
 import Landing from "./pages/Landing";
 
-// Protected Route Component
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useSelector((state) => state.auth);
   return isAuthenticated ? children : <Navigate to="/login" />;
@@ -76,6 +75,14 @@ const App = () => {
         }
       />
       <Route
+        path="/vital/:id"
+        element={
+          <ProtectedRoute>
+            <VitalView />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/timeline"
         element={
           <ProtectedRoute>
@@ -84,7 +91,6 @@ const App = () => {
         }
       />
 
-      {/* 404 */}
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );

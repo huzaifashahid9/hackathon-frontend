@@ -7,12 +7,12 @@ import { Activity, ArrowLeft, Loader, AlertCircle } from "lucide-react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-// Validation Schema using Yup (without cyclic dependencies)
 const vitalsValidationSchema = Yup.object({
   recordDate: Yup.date()
     .required("Date is required")
     .max(new Date(), "Date cannot be in the future"),
   bpSystolic: Yup.number()
+    .required("bpSystolic is required")
     .nullable()
     .transform((value, originalValue) => (originalValue === "" ? null : value))
     .min(40, "Systolic BP must be between 40-300 mmHg")
@@ -22,7 +22,7 @@ const vitalsValidationSchema = Yup.object({
       "Both systolic and diastolic BP are required",
       function (value) {
         const { bpDiastolic } = this.parent;
-        // If diastolic is filled but systolic is not, show error
+
         if (bpDiastolic && !value) {
           return false;
         }
@@ -41,6 +41,7 @@ const vitalsValidationSchema = Yup.object({
       }
     ),
   bpDiastolic: Yup.number()
+    .required("bpDiastolic is required")
     .nullable()
     .transform((value, originalValue) => (originalValue === "" ? null : value))
     .min(20, "Diastolic BP must be between 20-200 mmHg")
@@ -50,7 +51,7 @@ const vitalsValidationSchema = Yup.object({
       "Both systolic and diastolic BP are required",
       function (value) {
         const { bpSystolic } = this.parent;
-        // If systolic is filled but diastolic is not, show error
+
         if (bpSystolic && !value) {
           return false;
         }
@@ -58,32 +59,40 @@ const vitalsValidationSchema = Yup.object({
       }
     ),
   bloodSugar: Yup.number()
+    .required("bloodSugard is required")
     .nullable()
     .transform((value, originalValue) => (originalValue === "" ? null : value))
     .min(20, "Blood Sugar must be between 20-1000 mg/dL")
     .max(1000, "Blood Sugar must be between 20-1000 mg/dL"),
-  bloodSugarType: Yup.string().oneOf(["fasting", "random", "postprandial", "post-meal", "hba1c"]),
+  bloodSugarType: Yup.string()
+    .required("bloodSugarType is required")
+    .oneOf(["fasting", "random", "postprandial", "post-meal", "hba1c"]),
   weight: Yup.number()
+    .required("Weight is required")
     .nullable()
     .transform((value, originalValue) => (originalValue === "" ? null : value))
     .min(1, "Weight must be between 1-500 kg")
     .max(500, "Weight must be between 1-500 kg"),
   height: Yup.number()
+    .required("height is required")
     .nullable()
     .transform((value, originalValue) => (originalValue === "" ? null : value))
     .min(30, "Height must be between 30-300 cm")
     .max(300, "Height must be between 30-300 cm"),
   heartRate: Yup.number()
+    .required("heartRate is required")
     .nullable()
     .transform((value, originalValue) => (originalValue === "" ? null : value))
     .min(30, "Heart Rate must be between 30-300 bpm")
     .max(300, "Heart Rate must be between 30-300 bpm"),
   temperature: Yup.number()
+    .required("temperature is required")
     .nullable()
     .transform((value, originalValue) => (originalValue === "" ? null : value))
     .min(30, "Temperature must be between 30-45 °C")
     .max(45, "Temperature must be between 30-45 °C"),
   oxygenLevel: Yup.number()
+    .required("oxygenLevel is required")
     .nullable()
     .transform((value, originalValue) => (originalValue === "" ? null : value))
     .min(50, "Oxygen Level must be between 50-100%")
@@ -179,10 +188,10 @@ const AddVitals = () => {
       setLoading(true);
       try {
         await dispatch(addVitals(vitalsData)).unwrap();
-        toast.success("✅ Vitals added successfully! / Vitals kamyabi se add ho gaye!");
+        toast.success("Vitals added successfully! ");
         navigate("/dashboard");
       } catch (error) {
-        toast.error(error || "❌ Failed to add vitals / Vitals add nahi ho sake");
+        toast.error(error || "Failed to add vitals / Vitals add nahi ho sake");
       } finally {
         setLoading(false);
       }
@@ -216,20 +225,6 @@ const AddVitals = () => {
           </div>
 
           <form onSubmit={formik.handleSubmit} className="space-y-6">
-            {/* Show general error if no vital is filled */}
-            {formik.touched.bpSystolic && formik.errors.bpSystolic && 
-             !formik.values.bpSystolic && !formik.values.bloodSugar && 
-             !formik.values.weight && !formik.values.height && 
-             !formik.values.heartRate && !formik.values.temperature && 
-             !formik.values.oxygenLevel && (
-              <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
-                <AlertCircle className="w-5 h-5 text-red-500 mt-0.5" />
-                <p className="text-red-700 text-sm">
-                  {formik.errors.bpSystolic}
-                </p>
-              </div>
-            )}
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Record Date *
@@ -273,7 +268,9 @@ const AddVitals = () => {
                       : "border-gray-300"
                   }`}
                 />
-                <span className="text-xs text-gray-500">Upper number (mmHg)</span>
+                <span className="text-xs text-gray-500">
+                  Upper number (mmHg)
+                </span>
                 {formik.touched.bpSystolic && formik.errors.bpSystolic && (
                   <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
                     <AlertCircle className="w-4 h-4" />
@@ -299,7 +296,9 @@ const AddVitals = () => {
                       : "border-gray-300"
                   }`}
                 />
-                <span className="text-xs text-gray-500">Lower number (mmHg)</span>
+                <span className="text-xs text-gray-500">
+                  Lower number (mmHg)
+                </span>
                 {formik.touched.bpDiastolic && formik.errors.bpDiastolic && (
                   <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
                     <AlertCircle className="w-4 h-4" />
@@ -489,7 +488,9 @@ const AddVitals = () => {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Notes (Optional)
-                <span className="text-gray-500 text-xs ml-2">(Koi bhi additional notes)</span>
+                <span className="text-gray-500 text-xs ml-2">
+                  (Koi bhi additional notes)
+                </span>
               </label>
               <textarea
                 name="notes"
@@ -533,9 +534,13 @@ const AddVitals = () => {
 
           <div className="mt-6 p-4 bg-sky-50 border border-sky-200 rounded-lg">
             <p className="text-sky-800 text-sm">
-              <strong>💡 Tip / Mashwara:</strong> Fill in at least one vital sign. You don't need to fill all fields.
+              <strong>💡 Tip / Mashwara:</strong> Fill in at least one vital
+              sign. You don't need to fill all fields.
               <br />
-              <span className="text-sky-700">Kam az kam ek vital sign zaroor bharein. Sab fields ka bharna zaroori nahi hai.</span>
+              <span className="text-sky-700">
+                Kam az kam ek vital sign zaroor bharein. Sab fields ka bharna
+                zaroori nahi hai.
+              </span>
             </p>
           </div>
         </div>

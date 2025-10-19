@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../api/axios";
 
-// Add vitals
 export const addVitals = createAsyncThunk(
   "vitals/add",
   async (vitalsData, { rejectWithValue }) => {
@@ -16,7 +15,6 @@ export const addVitals = createAsyncThunk(
   }
 );
 
-// Get all vitals
 export const getVitals = createAsyncThunk(
   "vitals/getAll",
   async (params = {}, { rejectWithValue }) => {
@@ -31,8 +29,21 @@ export const getVitals = createAsyncThunk(
   }
 );
 
-// Delete vitals
-export const deleteVitals = createAsyncThunk(
+export const getVitalById = createAsyncThunk(
+  "vitals/getById",
+  async (id, { rejectWithValue }) => {
+    try {
+      const { data } = await api.get(`/vitals/${id}`);
+      return data.vital;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch vital"
+      );
+    }
+  }
+);
+
+export const deleteVital = createAsyncThunk(
   "vitals/delete",
   async (id, { rejectWithValue }) => {
     try {
@@ -48,6 +59,7 @@ export const deleteVitals = createAsyncThunk(
 
 const initialState = {
   vitals: [],
+  currentVital: null,
   loading: false,
   error: null,
   total: 0,
@@ -89,9 +101,25 @@ const vitalsSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+      // Get By ID
+      .addCase(getVitalById.pending, (state) => {
+        state.loading = true;
+        state.currentVital = null;
+      })
+      .addCase(getVitalById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.currentVital = action.payload;
+      })
+      .addCase(getVitalById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
       // Delete
-      .addCase(deleteVitals.fulfilled, (state, action) => {
+      .addCase(deleteVital.fulfilled, (state, action) => {
         state.vitals = state.vitals.filter((v) => v._id !== action.payload);
+        if (state.currentVital?._id === action.payload) {
+          state.currentVital = null;
+        }
       });
   },
 });

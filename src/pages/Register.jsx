@@ -3,9 +3,17 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { register } from "../store/slices/authSlice";
 import toast from "react-hot-toast";
-import { 
-  Heart, Mail, Lock, User, Loader, AlertCircle, 
-  CheckCircle, Shield, FileText, Activity 
+import {
+  Heart,
+  Mail,
+  Lock,
+  User,
+  Loader,
+  AlertCircle,
+  CheckCircle,
+  Shield,
+  FileText,
+  Activity,
 } from "lucide-react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -54,7 +62,7 @@ const Register = () => {
             password: values.password,
           })
         ).unwrap();
-        toast.success("✅ Account created successfully! / Account ban gaya!");
+        toast.success("Account created successfully! / Account ban gaya!");
         navigate("/dashboard");
       } catch (error) {
         toast.error(
@@ -95,12 +103,13 @@ const Register = () => {
                 Sehat ka Smart Dost 💚
               </p>
               <p className="text-xl text-white/90 mt-4 leading-relaxed">
-                Join thousands of users managing their health records with AI-powered insights
+                Join thousands of users managing their health records with
+                AI-powered insights
               </p>
             </div>
 
             {/* Features List */}
-            <div className="space-y-4">
+            {/* <div className="space-y-4">
               <div className="flex items-center gap-4 bg-white/10 backdrop-blur-sm p-4 rounded-xl">
                 <div className="bg-white/20 p-2 rounded-lg">
                   <FileText className="w-6 h-6 text-white" />
@@ -130,11 +139,13 @@ const Register = () => {
                   <p className="text-white/80 text-sm">Your data is encrypted and safe</p>
                 </div>
               </div>
-            </div>
+            </div> */}
 
             {/* Benefits */}
             <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl">
-              <h3 className="text-white font-bold text-lg mb-3">Why Choose HealthMate?</h3>
+              <h3 className="text-white font-bold text-lg mb-3">
+                Why Choose HealthMate?
+              </h3>
               <ul className="space-y-2">
                 <li className="flex items-center gap-2 text-white/90">
                   <CheckCircle className="w-5 h-5 text-emerald-200" />
@@ -159,7 +170,9 @@ const Register = () => {
 
         {/* Footer Quote */}
         <div className="relative z-10 text-white/80 text-sm">
-          <p className="italic">"Managing health records has never been this easy!"</p>
+          <p className="italic">
+            "Managing health records has never been this easy!"
+          </p>
           <p className="mt-2">- HealthMate Users</p>
         </div>
       </div>
@@ -182,140 +195,144 @@ const Register = () => {
 
           {/* Desktop Header */}
           <div className="hidden lg:block mb-8">
-            <h2 className="text-4xl font-bold text-gray-900 mb-2">Create Account</h2>
-            <p className="text-gray-600 text-lg">Get started for free - No credit card required</p>
+            <h2 className="text-4xl font-bold text-gray-900 mb-2">
+              Create Account
+            </h2>
+            <p className="text-gray-600 text-lg">
+              Get started for free - No credit card required
+            </p>
           </div>
 
           <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
             <form onSubmit={formik.handleSubmit} className="space-y-5">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Full Name
-              </label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="text"
-                  name="name"
-                  value={formik.values.name}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none ${
-                    formik.touched.name && formik.errors.name
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  }`}
-                  placeholder="Your Name"
-                />
-              </div>
-              {formik.touched.name && formik.errors.name && (
-                <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
-                  <AlertCircle className="w-4 h-4" />
-                  {formik.errors.name}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Email
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="email"
-                  name="email"
-                  value={formik.values.email}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none ${
-                    formik.touched.email && formik.errors.email
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  }`}
-                  placeholder="your@email.com"
-                />
-              </div>
-              {formik.touched.email && formik.errors.email && (
-                <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
-                  <AlertCircle className="w-4 h-4" />
-                  {formik.errors.email}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Password
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="password"
-                  name="password"
-                  value={formik.values.password}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none ${
-                    formik.touched.password && formik.errors.password
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  }`}
-                  placeholder="••••••••"
-                />
-              </div>
-              {formik.touched.password && formik.errors.password && (
-                <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
-                  <AlertCircle className="w-4 h-4" />
-                  {formik.errors.password}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Confirm Password
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  value={formik.values.confirmPassword}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none ${
-                    formik.touched.confirmPassword &&
-                    formik.errors.confirmPassword
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  }`}
-                  placeholder="••••••••"
-                />
-              </div>
-              {formik.touched.confirmPassword &&
-                formik.errors.confirmPassword && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Full Name
+                </label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="text"
+                    name="name"
+                    value={formik.values.name}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none ${
+                      formik.touched.name && formik.errors.name
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    }`}
+                    placeholder="Your Name"
+                  />
+                </div>
+                {formik.touched.name && formik.errors.name && (
                   <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
                     <AlertCircle className="w-4 h-4" />
-                    {formik.errors.confirmPassword}
+                    {formik.errors.name}
                   </p>
                 )}
-            </div>
+              </div>
 
-            <button
-              type="submit"
-              disabled={loading || !formik.isValid || !formik.dirty}
-              className="w-full bg-sky-500 hover:bg-sky-600 text-white py-4 rounded-lg font-bold text-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
-            >
-              {loading ? (
-                <>
-                  <Loader className="w-5 h-5 animate-spin" />
-                  <span>Creating account... / Account ban raha hai...</span>
-                </>
-              ) : (
-                <span>Create Account / Account Banayein</span>
-              )}
-            </button>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Email
+                </label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="email"
+                    name="email"
+                    value={formik.values.email}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none ${
+                      formik.touched.email && formik.errors.email
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    }`}
+                    placeholder="your@email.com"
+                  />
+                </div>
+                {formik.touched.email && formik.errors.email && (
+                  <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                    <AlertCircle className="w-4 h-4" />
+                    {formik.errors.email}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Password
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="password"
+                    name="password"
+                    value={formik.values.password}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none ${
+                      formik.touched.password && formik.errors.password
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    }`}
+                    placeholder="••••••••"
+                  />
+                </div>
+                {formik.touched.password && formik.errors.password && (
+                  <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                    <AlertCircle className="w-4 h-4" />
+                    {formik.errors.password}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Confirm Password
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="password"
+                    name="confirmPassword"
+                    value={formik.values.confirmPassword}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none ${
+                      formik.touched.confirmPassword &&
+                      formik.errors.confirmPassword
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    }`}
+                    placeholder="••••••••"
+                  />
+                </div>
+                {formik.touched.confirmPassword &&
+                  formik.errors.confirmPassword && (
+                    <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                      <AlertCircle className="w-4 h-4" />
+                      {formik.errors.confirmPassword}
+                    </p>
+                  )}
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-sky-500 hover:bg-sky-600 text-white py-4 rounded-lg font-bold text-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+              >
+                {loading ? (
+                  <>
+                    <Loader className="w-5 h-5 animate-spin" />
+                    <span>Creating account...</span>
+                  </>
+                ) : (
+                  <span>Create Account</span>
+                )}
+              </button>
             </form>
 
             <p className="text-center text-gray-600 mt-6">
@@ -330,7 +347,10 @@ const Register = () => {
           </div>
 
           <p className="text-center text-gray-500 text-sm mt-6">
-            <Link to="/" className="hover:text-sky-500 flex items-center justify-center gap-2">
+            <Link
+              to="/"
+              className="hover:text-sky-500 flex items-center justify-center gap-2"
+            >
               ← Back to Home
             </Link>
           </p>
