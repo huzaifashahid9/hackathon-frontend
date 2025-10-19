@@ -12,6 +12,7 @@ import AddVitals from "./pages/AddVitals";
 import VitalView from "./pages/VitalView";
 import Timeline from "./pages/Timeline";
 import Landing from "./pages/Landing";
+import FamilyMembers from "./pages/FamilyMembers";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -87,6 +88,14 @@ const App = () => {
         element={
           <ProtectedRoute>
             <Timeline />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/family-members"
+        element={
+          <ProtectedRoute>
+            <FamilyMembers />
           </ProtectedRoute>
         }
       />

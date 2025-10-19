@@ -3,9 +3,10 @@ import { useNavigate, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addVitals } from "../store/slices/vitalsSlice";
 import toast from "react-hot-toast";
-import { Activity, ArrowLeft, Loader, AlertCircle } from "lucide-react";
+import { Activity, ArrowLeft, Loader, AlertCircle, CheckCircle } from "lucide-react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import FamilyMemberSelector from "../components/FamilyMemberSelector";
 
 const vitalsValidationSchema = Yup.object({
   recordDate: Yup.date()
@@ -127,12 +128,14 @@ const vitalsValidationSchema = Yup.object({
 
 const AddVitals = () => {
   const [loading, setLoading] = useState(false);
+  const [addedVitals, setAddedVitals] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: {
       recordDate: new Date().toISOString().split("T")[0],
+      familyMemberId: "",
       bpSystolic: "",
       bpDiastolic: "",
       bloodSugar: "",
@@ -146,8 +149,14 @@ const AddVitals = () => {
     },
     validationSchema: vitalsValidationSchema,
     onSubmit: async (values) => {
+      if (!values.familyMemberId) {
+        toast.error("Please select a family member");
+        return;
+      }
+
       const vitalsData = {
         recordDate: values.recordDate,
+        familyMemberId: values.familyMemberId,
         notes: values.notes,
       };
 
@@ -187,9 +196,27 @@ const AddVitals = () => {
 
       setLoading(true);
       try {
-        await dispatch(addVitals(vitalsData)).unwrap();
-        toast.success("Vitals added successfully! ");
-        navigate("/dashboard");
+        const result = await dispatch(addVitals(vitalsData)).unwrap();
+        setAddedVitals(result);
+        toast.success("Vitals added successfully with AI analysis!");
+        
+        // Reset form but keep family member selected
+        formik.resetForm({
+          values: {
+            recordDate: new Date().toISOString().split("T")[0],
+            familyMemberId: values.familyMemberId,
+            bpSystolic: "",
+            bpDiastolic: "",
+            bloodSugar: "",
+            bloodSugarType: "fasting",
+            weight: "",
+            height: "",
+            heartRate: "",
+            temperature: "",
+            oxygenLevel: "",
+            notes: "",
+          },
+        });
       } catch (error) {
         toast.error(error || "Failed to add vitals / Vitals add nahi ho sake");
       } finally {
@@ -225,6 +252,13 @@ const AddVitals = () => {
           </div>
 
           <form onSubmit={formik.handleSubmit} className="space-y-6">
+            {/* Family Member Selector */}
+            <FamilyMemberSelector
+              value={formik.values.familyMemberId}
+              onChange={(value) => formik.setFieldValue("familyMemberId", value)}
+              required={true}
+            />
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Record Date *
@@ -544,9 +578,178 @@ const AddVitals = () => {
             </p>
           </div>
         </div>
+
+        {/* AI Analysis Result */}
+        {addedVitals && addedVitals.isAnalyzed && addedVitals.aiAnalysis && (
+          <div className="mt-8 bg-white rounded-xl shadow-lg p-8">
+            <div className="flex items-center gap-3 mb-6">
+              <CheckCircle className="w-8 h-8 text-green-500" />
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900">
+                  AI Analysis Complete!
+                </h2>
+                <p className="text-gray-600">
+                  Aapki vitals ka AI analysis tayyar hai
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-6">
+              {/* English Summary */}
+              {addedVitals.aiAnalysis.englishSummary && (
+                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <h3 className="font-semibold text-blue-900 mb-2">
+                    📊 Summary (English)
+                  </h3>
+                  <p className="text-blue-800 whitespace-pre-wrap">
+                    {addedVitals.aiAnalysis.englishSummary}
+                  </p>
+                </div>
+              )}
+
+              {/* Roman Urdu Summary */}
+              {addedVitals.aiAnalysis.romanUrduSummary && (
+                <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                  <h3 className="font-semibold text-green-900 mb-2">
+                    📊 Summary (Roman Urdu)
+                  </h3>
+                  <p className="text-green-800 whitespace-pre-wrap">
+                    {addedVitals.aiAnalysis.romanUrduSummary}
+                  </p>
+                </div>
+              )}
+
+              {/* BMI Display */}
+              {addedVitals.bmi && (
+                <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                  <h3 className="font-semibold text-purple-900 mb-2">
+                    ⚖️ Body Mass Index (BMI)
+                  </h3>
+                  <p className="text-2xl font-bold text-purple-900">
+                    {addedVitals.bmi}
+                  </p>
+                  <p className="text-sm text-purple-700">
+                    {addedVitals.bmi < 18.5 && "Underweight / Kam Wazan"}
+                    {addedVitals.bmi >= 18.5 && addedVitals.bmi < 25 && "Normal Weight / Normal Wazan"}
+                    {addedVitals.bmi >= 25 && addedVitals.bmi < 30 && "Overweight / Zyada Wazan"}
+                    {addedVitals.bmi >= 30 && "Obese / Motapa"}
+                  </p>
+                </div>
+              )}
+
+              {/* Abnormal Values */}
+              {addedVitals.aiAnalysis.abnormalValues &&
+                addedVitals.aiAnalysis.abnormalValues.length > 0 && (
+                  <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <h3 className="font-semibold text-red-900 mb-3 flex items-center gap-2">
+                      <AlertCircle className="w-5 h-5" />
+                      Abnormal Values / Ghalat Qadrain
+                    </h3>
+                    <div className="space-y-2">
+                      {addedVitals.aiAnalysis.abnormalValues.map((val, idx) => (
+                        <div key={idx} className="bg-white p-3 rounded border border-red-200">
+                          <p className="font-medium text-red-900">{val.parameter}</p>
+                          <p className="text-sm text-red-700">
+                            Value: {val.value} | Normal Range: {val.normalRange}
+                          </p>
+                          <span className="text-xs px-2 py-1 rounded bg-red-200 text-red-900">
+                            {val.status}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+              {/* Questions for Doctor */}
+              {addedVitals.aiAnalysis.doctorQuestions &&
+                addedVitals.aiAnalysis.doctorQuestions.length > 0 && (
+                  <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                    <h3 className="font-semibold text-purple-900 mb-2">
+                      ❓ Doctor se ye sawaal zaroor poochein
+                    </h3>
+                    <ul className="list-disc list-inside space-y-1 text-purple-800">
+                      {addedVitals.aiAnalysis.doctorQuestions.map((q, idx) => (
+                        <li key={idx}>{q}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+              {/* Foods to Avoid */}
+              {addedVitals.aiAnalysis.foodsToAvoid &&
+                addedVitals.aiAnalysis.foodsToAvoid.length > 0 && (
+                  <div className="p-4 bg-orange-50 border border-orange-200 rounded-lg">
+                    <h3 className="font-semibold text-orange-900 mb-2">
+                      🚫 Foods to Avoid / In Cheezon se Bachein
+                    </h3>
+                    <ul className="list-disc list-inside space-y-1 text-orange-800">
+                      {addedVitals.aiAnalysis.foodsToAvoid.map((f, idx) => (
+                        <li key={idx}>{f}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+              {/* Recommended Foods */}
+              {addedVitals.aiAnalysis.recommendedFoods &&
+                addedVitals.aiAnalysis.recommendedFoods.length > 0 && (
+                  <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                    <h3 className="font-semibold text-green-900 mb-2">
+                      ✅ Recommended Foods / Ye Cheezein Khayein
+                    </h3>
+                    <ul className="list-disc list-inside space-y-1 text-green-800">
+                      {addedVitals.aiAnalysis.recommendedFoods.map((f, idx) => (
+                        <li key={idx}>{f}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+              {/* Home Remedies */}
+              {addedVitals.aiAnalysis.homeRemedies &&
+                addedVitals.aiAnalysis.homeRemedies.length > 0 && (
+                  <div className="p-4 bg-teal-50 border border-teal-200 rounded-lg">
+                    <h3 className="font-semibold text-teal-900 mb-2">
+                      🏠 Gharelu Ilaaj / Home Remedies
+                    </h3>
+                    <ul className="list-disc list-inside space-y-1 text-teal-800">
+                      {addedVitals.aiAnalysis.homeRemedies.map((r, idx) => (
+                        <li key={idx}>{r}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+              {/* Disclaimer */}
+              <div className="p-4 bg-gray-100 border border-gray-300 rounded-lg">
+                <p className="text-gray-700 text-sm italic">
+                  ⚠️ {addedVitals.aiAnalysis.disclaimer}
+                </p>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-4 pt-4">
+                <button
+                  onClick={() => setAddedVitals(null)}
+                  className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-lg font-semibold transition-all"
+                >
+                  Add More Vitals
+                </button>
+                <Link
+                  to="/dashboard"
+                  className="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-3 rounded-lg font-semibold text-center transition-all"
+                >
+                  Go to Dashboard
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
 export default AddVitals;
+

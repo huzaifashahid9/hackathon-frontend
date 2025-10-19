@@ -3,7 +3,8 @@ import { useNavigate, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { uploadReport } from "../store/slices/reportSlice";
 import toast from "react-hot-toast";
-import { Upload, FileText, ArrowLeft, Loader } from "lucide-react";
+import { Upload, FileText, ArrowLeft, Loader, CheckCircle, AlertCircle } from "lucide-react";
+import FamilyMemberSelector from "../components/FamilyMemberSelector";
 
 const UploadReport = () => {
   const [formData, setFormData] = useState({
@@ -11,10 +12,13 @@ const UploadReport = () => {
     reportType: "blood-test",
     reportDate: "",
     notes: "",
+    familyMemberId: "",
     file: null,
   });
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [uploadedReport, setUploadedReport] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -55,6 +59,11 @@ const UploadReport = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!formData.familyMemberId) {
+      toast.error("Please select a family member");
+      return;
+    }
+
     if (!formData.file) {
       toast.error("Please select a file");
       return;
@@ -66,17 +75,69 @@ const UploadReport = () => {
     data.append("reportType", formData.reportType);
     data.append("reportDate", formData.reportDate);
     data.append("notes", formData.notes);
+    data.append("familyMemberId", formData.familyMemberId);
 
     setLoading(true);
     try {
-      await dispatch(uploadReport(data)).unwrap();
+      const result = await dispatch(uploadReport(data)).unwrap();
+      setUploadedReport(result);
+      setIsProcessing(true);
       toast.success("Report uploaded! AI is analyzing...");
-      navigate("/dashboard");
+      
+      // Reset form but keep family member selected
+      setFormData({
+        ...formData,
+        title: "",
+        reportType: "blood-test",
+        reportDate: "",
+        notes: "",
+        file: null,
+      });
+      setPreview(null);
+      
+      // Poll for AI analysis completion
+      checkAnalysisStatus(result._id);
     } catch (error) {
       toast.error(error || "Upload failed");
     } finally {
       setLoading(false);
     }
+  };
+
+  const checkAnalysisStatus = (reportId) => {
+    const interval = setInterval(async () => {
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/reports/${reportId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        const data = await response.json();
+        
+        if (data.success && data.report.isProcessed) {
+          setUploadedReport(data.report);
+          setIsProcessing(false);
+          clearInterval(interval);
+          toast.success("AI analysis complete!");
+        }
+      } catch (error) {
+        console.error("Error checking analysis status:", error);
+      }
+    }, 3000); // Check every 3 seconds
+
+    // Stop checking after 2 minutes
+    setTimeout(() => {
+      clearInterval(interval);
+      setIsProcessing(false);
+    }, 120000);
+  };
+
+  const handleNewUpload = () => {
+    setUploadedReport(null);
+    setIsProcessing(false);
   };
 
   return (
@@ -106,6 +167,15 @@ const UploadReport = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Family Member Selector */}
+            <FamilyMemberSelector
+              value={formData.familyMemberId}
+              onChange={(value) =>
+                setFormData({ ...formData, familyMemberId: value })
+              }
+              required={true}
+            />
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Report Title *
@@ -243,6 +313,185 @@ const UploadReport = () => {
             </p>
           </div>
         </div>
+
+        {/* AI Analysis Result */}
+        {uploadedReport && (
+          <div className="mt-8 bg-white rounded-xl shadow-lg p-8">
+            <div className="flex items-center gap-3 mb-6">
+              {isProcessing ? (
+                <>
+                  <Loader className="w-8 h-8 text-sky-500 animate-spin" />
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900">
+                      AI Analysis in Progress...
+                    </h2>
+                    <p className="text-gray-600">
+                      Aapki report ko analyze kiya ja raha hai
+                    </p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <CheckCircle className="w-8 h-8 text-green-500" />
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900">
+                      AI Analysis Complete!
+                    </h2>
+                    <p className="text-gray-600">
+                      {uploadedReport.title}
+                    </p>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {uploadedReport.isProcessed && uploadedReport.aiSummary ? (
+              <div className="space-y-6">
+                {/* English Summary */}
+                {uploadedReport.aiSummary.englishSummary && (
+                  <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <h3 className="font-semibold text-blue-900 mb-2">
+                      📊 Summary (English)
+                    </h3>
+                    <p className="text-blue-800 whitespace-pre-wrap">
+                      {uploadedReport.aiSummary.englishSummary}
+                    </p>
+                  </div>
+                )}
+
+                {/* Roman Urdu Summary */}
+                {uploadedReport.aiSummary.romanUrduSummary && (
+                  <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                    <h3 className="font-semibold text-green-900 mb-2">
+                      📊 Summary (Roman Urdu)
+                    </h3>
+                    <p className="text-green-800 whitespace-pre-wrap">
+                      {uploadedReport.aiSummary.romanUrduSummary}
+                    </p>
+                  </div>
+                )}
+
+                {/* Abnormal Values */}
+                {uploadedReport.aiSummary.abnormalValues &&
+                  uploadedReport.aiSummary.abnormalValues.length > 0 && (
+                    <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                      <h3 className="font-semibold text-red-900 mb-3 flex items-center gap-2">
+                        <AlertCircle className="w-5 h-5" />
+                        Abnormal Values
+                      </h3>
+                      <div className="space-y-2">
+                        {uploadedReport.aiSummary.abnormalValues.map((val, idx) => (
+                          <div key={idx} className="bg-white p-3 rounded border border-red-200">
+                            <p className="font-medium text-red-900">{val.parameter}</p>
+                            <p className="text-sm text-red-700">
+                              Value: {val.value} | Normal Range: {val.normalRange}
+                            </p>
+                            <span className={`text-xs px-2 py-1 rounded ${
+                              val.status === 'critical' ? 'bg-red-200 text-red-900' :
+                              val.status === 'high' ? 'bg-orange-200 text-orange-900' :
+                              'bg-yellow-200 text-yellow-900'
+                            }`}>
+                              {val.status}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                {/* Questions for Doctor */}
+                {uploadedReport.aiSummary.doctorQuestions &&
+                  uploadedReport.aiSummary.doctorQuestions.length > 0 && (
+                    <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                      <h3 className="font-semibold text-purple-900 mb-2">
+                        ❓ Doctor se ye sawaal zaroor poochein
+                      </h3>
+                      <ul className="list-disc list-inside space-y-1 text-purple-800">
+                        {uploadedReport.aiSummary.doctorQuestions.map((q, idx) => (
+                          <li key={idx}>{q}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                {/* Foods to Avoid */}
+                {uploadedReport.aiSummary.foodsToAvoid &&
+                  uploadedReport.aiSummary.foodsToAvoid.length > 0 && (
+                    <div className="p-4 bg-orange-50 border border-orange-200 rounded-lg">
+                      <h3 className="font-semibold text-orange-900 mb-2">
+                        🚫 Foods to Avoid
+                      </h3>
+                      <ul className="list-disc list-inside space-y-1 text-orange-800">
+                        {uploadedReport.aiSummary.foodsToAvoid.map((f, idx) => (
+                          <li key={idx}>{f}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                {/* Recommended Foods */}
+                {uploadedReport.aiSummary.recommendedFoods &&
+                  uploadedReport.aiSummary.recommendedFoods.length > 0 && (
+                    <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                      <h3 className="font-semibold text-green-900 mb-2">
+                        ✅ Recommended Foods
+                      </h3>
+                      <ul className="list-disc list-inside space-y-1 text-green-800">
+                        {uploadedReport.aiSummary.recommendedFoods.map((f, idx) => (
+                          <li key={idx}>{f}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                {/* Home Remedies */}
+                {uploadedReport.aiSummary.homeRemedies &&
+                  uploadedReport.aiSummary.homeRemedies.length > 0 && (
+                    <div className="p-4 bg-teal-50 border border-teal-200 rounded-lg">
+                      <h3 className="font-semibold text-teal-900 mb-2">
+                        🏠 Gharelu Ilaaj / Home Remedies
+                      </h3>
+                      <ul className="list-disc list-inside space-y-1 text-teal-800">
+                        {uploadedReport.aiSummary.homeRemedies.map((r, idx) => (
+                          <li key={idx}>{r}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                {/* Disclaimer */}
+                <div className="p-4 bg-gray-100 border border-gray-300 rounded-lg">
+                  <p className="text-gray-700 text-sm italic">
+                    ⚠️ {uploadedReport.aiSummary.disclaimer}
+                  </p>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex gap-4 pt-4">
+                  <button
+                    onClick={handleNewUpload}
+                    className="flex-1 bg-sky-500 hover:bg-sky-600 text-white py-3 rounded-lg font-semibold transition-all"
+                  >
+                    Upload Another Report
+                  </button>
+                  <Link
+                    to="/dashboard"
+                    className="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-3 rounded-lg font-semibold text-center transition-all"
+                  >
+                    Go to Dashboard
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <Loader className="w-12 h-12 text-sky-500 animate-spin mx-auto mb-4" />
+                <p className="text-gray-600">
+                  AI analysis in progress... Please wait
+                </p>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

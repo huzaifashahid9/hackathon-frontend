@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getReports } from "../store/slices/reportSlice";
 import { getVitals } from "../store/slices/vitalsSlice";
+import { fetchFamilyMembers } from "../store/slices/familyMemberSlice";
 import {
   ArrowLeft,
   FileText,
@@ -10,18 +11,36 @@ import {
   Calendar,
   Filter,
   Loader,
+  Users,
 } from "lucide-react";
 
 const Timeline = () => {
   const dispatch = useDispatch();
   const { reports, loading: reportsLoading } = useSelector((state) => state.reports);
   const { vitals, loading: vitalsLoading } = useSelector((state) => state.vitals);
+  const { members, selectedMember } = useSelector((state) => state.familyMembers);
   const [filter, setFilter] = useState("all");
+  const [selectedFamilyMemberId, setSelectedFamilyMemberId] = useState("");
 
   useEffect(() => {
-    dispatch(getReports({ limit: 100 }));
-    dispatch(getVitals({ limit: 100 }));
+    dispatch(fetchFamilyMembers());
   }, [dispatch]);
+
+  useEffect(() => {
+    // Use selectedMember from Redux if available
+    if (selectedMember && !selectedFamilyMemberId) {
+      setSelectedFamilyMemberId(selectedMember._id);
+    }
+  }, [selectedMember, selectedFamilyMemberId]);
+
+  useEffect(() => {
+    const params = { limit: 100 };
+    if (selectedFamilyMemberId) {
+      params.familyMemberId = selectedFamilyMemberId;
+    }
+    dispatch(getReports(params));
+    dispatch(getVitals(params));
+  }, [dispatch, selectedFamilyMemberId]);
 
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString("en-US", {
@@ -110,6 +129,25 @@ const Timeline = () => {
                 Vitals
               </button>
             </div>
+
+            {/* Family Member Filter */}
+            {members.length > 0 && (
+              <div className="flex items-center gap-2 ml-auto">
+                <Users className="w-5 h-5 text-purple-500" />
+                <select
+                  value={selectedFamilyMemberId}
+                  onChange={(e) => setSelectedFamilyMemberId(e.target.value)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                >
+                  <option value="">All Family Members</option>
+                  {members.map((member) => (
+                    <option key={member._id} value={member._id}>
+                      {member.name} ({member.relationship})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
           </div>
         </div>
 
